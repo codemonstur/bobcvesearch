@@ -18,11 +18,11 @@ import static bobcvesearch.core.VulnerabilitySearch.findVulnerabilities;
 import static bobthebuildtool.services.Update.requireBobVersion;
 import static jcli.CliParserBuilder.newCliParser;
 
-public enum Main {;
+public enum BobPlugin {;
 
     public static void installPlugin(final Project project) throws VersionTooOld {
         requireBobVersion("0.3.0");
-        project.addCommand("check-cve", "Checks if any dependency has a known vulnerability", Main::checkCVE);
+        project.addCommand("check-cve", "Checks if any dependency has a known vulnerability", BobPlugin::checkCVE);
     }
 
     private static int checkCVE(final Project project, final Map<String, String> environment, final String[] args)

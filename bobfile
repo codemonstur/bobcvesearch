@@ -1,3 +1,5 @@
+#plugin codemonstur/bobcvesearch:0.1.0
+
 name: bobcvesearch
 packaging: bob-plugin
 version: 0.1.0
