@@ -2,7 +2,7 @@ package bobcvesearch.model;
 
 import bobthebuildtool.pojos.buildfile.Dependency;
 
-public final class Finding { Dependency dependency; float confidence; String cve; String cvssV2; String cvssV3;
+public final class Finding { public Dependency dependency; float confidence; public String cve; String cvssV2; String cvssV3;
     public Finding(Dependency dependency, float confidence, String cve, String cvssV2, String cvssV3) {
         this.dependency = dependency;
         this.confidence = confidence;

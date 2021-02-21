@@ -41,7 +41,7 @@ public enum Main {;
     private static void printVulnerabilities(final List<Finding> list, final boolean failOnFind) {
         final Consumer<String> logger = failOnFind ? Log::logError : Log::logWarning;
         for (final var finding : list) {
-            logger.accept("Dependency " + finding.dependency().toString() + " might match CVE " + finding.cve());
+            logger.accept("Dependency " + finding.dependency.toString() + " might match CVE " + finding.cve);
         }
     }
 
