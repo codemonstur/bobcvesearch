@@ -1,8 +1,8 @@
-#plugin codemonstur/bobcvesearch:0.1.0
+#plugin codemonstur/bobcvesearch:0.1.2
 
-name: bobcvesearch
 packaging: bob-plugin
-version: 0.1.1
+enablePreview: false
+version: 0.1.2
 release: 15
 dependencies:
   - project: ../bobthebuildtool
