@@ -2,7 +2,7 @@
 
 name: bobcvesearch
 packaging: bob-plugin
-version: 0.1.0
+version: 0.1.1
 release: 15
 dependencies:
   - project: ../bobthebuildtool
