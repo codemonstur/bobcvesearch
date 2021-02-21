@@ -1,0 +1,7 @@
+0.1.0
+
+Initial release, untested
+Dowload NVD database
+Search using lucene index
+Suppressions file
+Ability to fail build
