@@ -1,4 +1,4 @@
 0.1.5
 
-Fixed bug in NVD model
-Added release notes
+Added GAV to CPE map
+Rewrote querying
