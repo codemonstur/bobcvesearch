@@ -76,7 +76,7 @@ public final class NvdModel {
     public static class CpeMatch { Boolean vulnerable; String cpe23Uri; String versionEndIncluding; }
 
     public static class Impact { BaseMetricV2 baseMetricV2; BaseMetricV3 baseMetricV3; }
-    public static class BaseMetricV2 { CvssV2 cvssV2; String severity; Integer exploitabilityScore; Double impactScore;
+    public static class BaseMetricV2 { CvssV2 cvssV2; String severity; Double exploitabilityScore; Double impactScore;
         Boolean acInsufInfo; Boolean obtainAllPrivilege; Boolean obtainUserPrivilege; Boolean obtainOtherPrivilege;
         Boolean userInteractionRequired; }
     public static class CvssV2 { String version; String vectorString; String accessVector; String accessComplexity;
