@@ -16,7 +16,7 @@ public final class NvdModel {
             return cve.CVE_data_meta.ID;
         }
 
-        public String getCPEs() {
+        public List<String> getCPEs() {
             final var list = new ArrayList<String>();
 
             if (configurations != null && configurations.nodes != null) {
@@ -28,7 +28,7 @@ public final class NvdModel {
                     }
                 }
             }
-            return String.join(",", list);
+            return list;
         }
 
         public String getDescription() {

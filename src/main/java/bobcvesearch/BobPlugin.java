@@ -20,6 +20,12 @@ import static jcli.CliParserBuilder.newCliParser;
 
 public enum BobPlugin {;
 
+    public static final String DB_LOCATION = ".bob/security/cve";
+
+    public static final List<String> NVD_DB_NAMES = List.of("modified", "recent", "2021", "2020",
+            "2019", "2018", "2017", "2016", "2015", "2014", "2013", "2012", "2011", "2010", "2009",
+            "2008", "2007", "2006", "2005", "2004", "2003", "2002");
+
     public static void installPlugin(final Project project) throws VersionTooOld {
         requireBobVersion("0.3.0");
         project.addCommand("check-cve", "Checks if any dependency has a known vulnerability", BobPlugin::checkCVE);
@@ -29,7 +35,7 @@ public enum BobPlugin {;
             throws DependencyResolutionFailed, InvalidCommandLine, IOException, ProjectHasVulnerabilities {
         final var cli = newCliParser(CliCveSearch::new).name("check-cve").parse(args);
 
-        final var list = findVulnerabilities(project, cli);
+        final var list = findVulnerabilities(project, cli, NVD_DB_NAMES);
         if (!list.isEmpty()) {
             printVulnerabilities(list, cli.failOnFind);
             if (cli.failOnFind) throw new ProjectHasVulnerabilities(list.size());
@@ -41,7 +47,7 @@ public enum BobPlugin {;
     private static void printVulnerabilities(final List<Finding> list, final boolean failOnFind) {
         final Consumer<String> logger = failOnFind ? Log::logError : Log::logWarning;
         for (final var finding : list) {
-            logger.accept("Dependency " + finding.dependency.toString() + " might match CVE " + finding.cve);
+            logger.accept("Dependency " + finding.coordinate + " matchs CVE " + finding.cve + " with probability " + finding.confidence);
         }
     }
 
