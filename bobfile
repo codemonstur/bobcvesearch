@@ -1,8 +1,8 @@
-#plugin codemonstur/bobcvesearch:0.1.2
+plugin codemonstur/bobcvesearch:0.1.2
 
 packaging: bob-plugin
 enablePreview: false
-version: 0.1.2
+version: 0.1.3
 release: 15
 dependencies:
   - project: ../bobthebuildtool
@@ -28,3 +28,6 @@ deploy
     git push && git push --tags
   	echo [${PROJECT_NAME}] Creating github release
     hub release create -a target/${PROJECT_NAME}-${PROJECT_VERSION}.jar -F src/docs/releases/release-${PROJECT_VERSION}.txt ${PROJECT_NAME}-${PROJECT_VERSION}
+
+test
+    check-cve
