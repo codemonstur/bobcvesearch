@@ -2,7 +2,7 @@ plugin codemonstur/bobcvesearch:0.1.5
 
 packaging: bob-plugin
 enablePreview: false
-version: 0.1.5
+version: 0.1.6
 release: 15
 dependencies:
   - project: ../bobthebuildtool

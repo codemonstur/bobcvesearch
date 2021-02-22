@@ -1,0 +1,4 @@
+0.1.6
+
+Added GAV to CPE map
+Rewrote querying
