@@ -81,7 +81,7 @@ public final class NvdModel {
         Boolean userInteractionRequired; }
     public static class CvssV2 { String version; String vectorString; String accessVector; String accessComplexity;
         String authentication; String confidentialityImpact; String integrityImpact; String availabilityImpact;
-        Integer baseScore; }
+        Double baseScore; }
     public static class BaseMetricV3 { CvssV3 cvssV3; Double exploitabilityScore; Double impactScore; }
     public static class CvssV3 { String version; String vectorString; String attackVector; String attackComplexity;
         String privilegesRequired; String userInteraction; String scope; String confidentialityImpact;
