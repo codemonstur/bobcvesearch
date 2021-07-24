@@ -1,5 +1,4 @@
 
-[![Build Status](https://travis-ci.org/codemonstur/bobcvesearch.svg?branch=master)](https://travis-ci.org/codemonstur/bobcvesearch)
 [![GitHub Release](https://img.shields.io/github/release/codemonstur/bobcvesearch.svg)](https://github.com/codemonstur/bobcvesearch/releases) 
 [![MIT Licence](https://badges.frapsoft.com/os/mit/mit.svg?v=103)](https://opensource.org/licenses/mit-license.php)
 
@@ -86,3 +85,8 @@ Example CPEs known in the wild:
 cpe:2.3:a:redhat:undertow:2.0.0:sp1:*:*:*:*:*:*
 cpe:2.3:a:junit:junit4:4.7:*:*:*:*:*:*:*
 ```
+
+## Notes
+
+Maybe I should do something with OSSIndex
+https://ossindex.sonatype.org/doc/rest

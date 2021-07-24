@@ -1,9 +1,9 @@
-plugin codemonstur/bobcvesearch:0.1.5
+plugin codemonstur/bobcvesearch:0.1.6
 
 packaging: bob-plugin
 enablePreview: false
 version: 0.1.6
-release: 15
+release: 16
 dependencies:
   - project: ../bobthebuildtool
     scope: provided
