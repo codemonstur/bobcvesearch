@@ -21,14 +21,14 @@
         <dependency>
             <groupId>com.github.codemonstur</groupId>
             <artifactId>bobthebuildtool</artifactId>
-            <version>5</version>
+            <version>0</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-core</artifactId>
-            <version>8.8.0</version>
+            <version>8.9.0</version>
         </dependency>
 
     </dependencies>
