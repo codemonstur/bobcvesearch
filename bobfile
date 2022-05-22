@@ -1,14 +1,14 @@
 include https://raw.githubusercontent.com/codemonstur/bobfiles/master/foss-app-github
-plugin codemonstur/bobcvesearch:0.1.6
+#plugin codemonstur/bobcvesearch:0.1.6
 
 packaging: bob-plugin
 enablePreview: false
 version: 6
-release: 16
+release: 18
 dependencies:
   - project: ../bobthebuildtool
     scope: provided
-  - repository: org.apache.lucene:lucene-core:8.9.0
+  - repository: org.apache.lucene:lucene-core:9.1.0
 
 test
     check-cve
