@@ -8,7 +8,7 @@ release: 18
 dependencies:
   - project: ../bobthebuildtool
     scope: provided
-  - repository: org.apache.lucene:lucene-core:9.1.0
+  - repository: org.apache.lucene:lucene-core:9.3.0
 
 test
     check-cve
