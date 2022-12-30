@@ -7,7 +7,9 @@ version: 6
 dependencies:
   - project: ../bobthebuildtool
     scope: provided
-  - repository: org.apache.lucene:lucene-core:9.3.0
+  - repository: com.github.codemonstur:httpclient:1.0.2
+  - repository: org.jsoup:jsoup:1.15.3
+
 
 test
     check-cve

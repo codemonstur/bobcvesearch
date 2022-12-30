@@ -1,54 +1,66 @@
 package bobcvesearch;
 
-import bobcvesearch.error.ProjectHasVulnerabilities;
-import bobcvesearch.model.CliCveSearch;
-import bobcvesearch.model.Finding;
+import bobcvesearch.util.ProjectHasVulnerabilities;
+import bobcvesearch.util.Suppressions;
+import bobcvesearch.util.Suppressions.SuppressionsFile;
 import bobthebuildtool.pojos.buildfile.Project;
 import bobthebuildtool.pojos.error.DependencyResolutionFailed;
 import bobthebuildtool.pojos.error.VersionTooOld;
 import bobthebuildtool.services.Log;
+import jcli.annotations.CliOption;
 import jcli.errors.InvalidCommandLine;
 
 import java.io.IOException;
-import java.util.List;
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import static bobcvesearch.core.VulnerabilitySearch.findVulnerabilities;
+import static bobcvesearch.util.DependencyResolution.listProjectDependencies;
+import static bobcvesearch.db.OSVdev.listVulnerabilities;
+import static bobcvesearch.util.Suppressions.loadSuppresionsFile;
+import static bobthebuildtool.services.Functions.isNullOrEmpty;
 import static bobthebuildtool.services.Update.requireBobVersion;
 import static jcli.CliParserBuilder.newCliParser;
 
 public enum BobPlugin {;
 
-    public static final String DB_LOCATION = ".bob/security/cve";
-
-    public static final List<String> NVD_DB_NAMES = List.of("modified", "recent", "2021", "2020",
-            "2019", "2018", "2017", "2016", "2015", "2014", "2013", "2012", "2011", "2010", "2009",
-            "2008", "2007", "2006", "2005", "2004", "2003", "2002");
-
     public static void installPlugin(final Project project) throws VersionTooOld {
-        requireBobVersion("0.3.0");
-        project.addCommand("check-cve", "Checks if any dependency has a known vulnerability", BobPlugin::checkCVE);
+        requireBobVersion("11");
+        project.addCommand("check-cve", "Checks OSV.dev for known vulnerabilities of dependencies", BobPlugin::checkCVE);
+    }
+
+    public static class CliCheckCve {
+        @CliOption(name = 's', longName = "suppressions", defaultValue = "src/conf/suppressions.yml", description = "The suppressions file to use")
+        public Path suppressions;
+        @CliOption(name = 'f', longName = "failIfResults", description = "Fails the build if findings")
+        public boolean failOnFind;
+        @CliOption(name = 'd', longName = "days", defaultValue = "7", description = "The number of days before a new update is attempted")
+        public long numDays;
     }
 
     private static int checkCVE(final Project project, final Map<String, String> environment, final String[] args)
             throws DependencyResolutionFailed, InvalidCommandLine, IOException, ProjectHasVulnerabilities {
-        final var cli = newCliParser(CliCveSearch::new).name("check-cve").parse(args);
+        final var cli = newCliParser(CliCheckCve::new).name("check-cve").parse(args);
 
-        final var list = findVulnerabilities(project, cli, NVD_DB_NAMES);
-        if (!list.isEmpty()) {
-            printVulnerabilities(list, cli.failOnFind);
-            if (cli.failOnFind) throw new ProjectHasVulnerabilities(list.size());
+        final Consumer<String> logger = cli.failOnFind ? Log::logError : Log::logWarning;
+        final SuppressionsFile sups = loadSuppresionsFile(project, cli.suppressions);
+
+        int found = 0;
+        for (final var lib : listProjectDependencies(project)) {
+            for (final var vuln : listVulnerabilities(lib)) {
+                found++;
+                for (final var cve : vuln.aliases()) {
+                    if (sups.suppresses(cve, lib.repository)) continue;
+                    logger.accept(vuln.published() + "\t" + lib.repository + "\t" + cve + "\t" + vuln.severity().score() + "\t" + vuln.summary());
+                }
+                if (vuln.aliases().isEmpty()) {
+                    logger.accept(vuln.published() + "\t" + lib.repository + "\t" + "NO-CVE-LISTED" + "\t" + vuln.severity().score() + "\t" + vuln.summary());
+                }
+            }
         }
 
+        if (cli.failOnFind && found > 0) throw new ProjectHasVulnerabilities(found);
         return 0;
-    }
-
-    private static void printVulnerabilities(final List<Finding> list, final boolean failOnFind) {
-        final Consumer<String> logger = failOnFind ? Log::logError : Log::logWarning;
-        for (final var finding : list) {
-            logger.accept("Dependency " + finding.coordinate + " matchs CVE " + finding.cve + " with probability " + finding.confidence);
-        }
     }
 
 }

@@ -1,4 +1,4 @@
-package bobcvesearch.core;
+package bobcvesearch.util;
 
 import bobthebuildtool.pojos.buildfile.Dependency;
 import bobthebuildtool.pojos.buildfile.Project;
