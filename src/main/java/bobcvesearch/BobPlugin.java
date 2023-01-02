@@ -1,5 +1,6 @@
 package bobcvesearch;
 
+import bobcvesearch.db.OSVdev;
 import bobcvesearch.util.ProjectHasVulnerabilities;
 import bobcvesearch.util.Suppressions;
 import bobcvesearch.util.Suppressions.SuppressionsFile;
@@ -52,10 +53,10 @@ public enum BobPlugin {;
                     found++;
                     for (final var cve : vuln.aliases()) {
                         if (sups.suppresses(cve, lib.repository)) continue;
-                        logger.accept(vuln.published() + "\t" + lib.repository + "\t" + cve + "\t" + vuln.severity().score() + "\t" + vuln.summary());
+                        logger.accept(vuln.published() + "\t" + lib.repository + "\t" + cve + "\t" + toSeverity(vuln) + "\t" + vuln.summary());
                     }
                     if (vuln.aliases().isEmpty()) {
-                        logger.accept(vuln.published() + "\t" + lib.repository + "\t" + "NO-CVE-LISTED" + "\t" + vuln.severity().score() + "\t" + vuln.summary());
+                        logger.accept(vuln.published() + "\t" + lib.repository + "\t" + "NO-CVE-LISTED" + "\t" + toSeverity(vuln) + "\t" + vuln.summary());
                     }
                 }
             } catch (final Exception e) {
@@ -65,6 +66,10 @@ public enum BobPlugin {;
 
         if (cli.failOnFind && found > 0) throw new ProjectHasVulnerabilities(found);
         return 0;
+    }
+
+    private static String toSeverity(final OSVdev.Vulnerability vuln) {
+        return isNullOrEmpty(vuln.severity()) ? "\t" : vuln.severity().get(0).score();
     }
 
 }

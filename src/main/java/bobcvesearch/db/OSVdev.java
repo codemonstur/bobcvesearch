@@ -21,7 +21,7 @@ public enum OSVdev {;
 
     public record Vulnerability(String schema_version, String id, String summary, String details, List<String> aliases,
                                 String modified, String published, Map<String, Object> database_specific,
-                                List<Reference> references, List<Software> affected, Severity severity) {}
+                                List<Reference> references, List<Software> affected, List<Severity> severity) {}
     public record Reference(String type, String url) {}
     public record Software(@SerializedName("package") PPackage ppackage, Map<String, Object> database_specific, List<String> versions) {}
     public record PPackage(String name, String ecosystem, String purl) {}
@@ -35,7 +35,7 @@ public enum OSVdev {;
         return list != null ? list : emptyList();
     }
 
-    private static OsvdevResponseBody callOsvdev(final String groupId, final String artifactId, final String version) throws IOException {
+    public static OsvdevResponseBody callOsvdev(final String groupId, final String artifactId, final String version) throws IOException {
         return callOsvdev(toOsdevRequest(groupId, artifactId, version));
     }
 
