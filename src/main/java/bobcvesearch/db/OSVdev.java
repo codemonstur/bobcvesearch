@@ -10,6 +10,7 @@ import java.util.Map;
 
 import static bobcvesearch.util.ExtendedHttpCaller.newHttpCall;
 import static bobthebuildtool.services.Functions.isNullOrEmpty;
+import static java.util.Collections.emptyList;
 
 // OSV.dev is a nice project started by Google. They have a simple HTTP API that I can query with
 // a maven GAV and it gives me a list of vulnerabilities back. Perfect. This works.
@@ -27,9 +28,11 @@ public enum OSVdev {;
     public record Severity(String type, String score) {}
 
     public static List<Vulnerability> listVulnerabilities(final Dependency dependency) throws IOException {
-        if (isNullOrEmpty(dependency.repository)) return Collections.emptyList();
+        if (isNullOrEmpty(dependency.repository)) return emptyList();
+
         final var gav = dependency.repository.split(":");
-        return callOsvdev(gav[0], gav[1], gav[2]).vulns();
+        final var list = callOsvdev(gav[0], gav[1], gav[2]).vulns();
+        return list != null ? list : emptyList();
     }
 
     private static OsvdevResponseBody callOsvdev(final String groupId, final String artifactId, final String version) throws IOException {
@@ -40,6 +43,8 @@ public enum OSVdev {;
         return new OsvdevRequestBody(version, new OSVdev.PPackage(groupId + ":" + artifactId, "Maven", null));
     }
 
+    // curl -v https://api.osv.dev/v1/query -d '{"version":"1.27","package":{"name":"org.yaml:snakeyaml","ecosystem":"Maven"}}'
+    // curl -v https://api.osv.dev/v1/query -d '{"version":"1.15.3","package":{"name":"org.jsoup:jsoup","ecosystem":"Maven"}}'
     private static OsvdevResponseBody callOsvdev(final OsvdevRequestBody request) throws IOException {
         return newHttpCall()
             .scheme("https").hostname("api.osv.dev")
