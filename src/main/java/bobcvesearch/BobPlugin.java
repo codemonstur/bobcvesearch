@@ -39,6 +39,15 @@ public enum BobPlugin {;
         public long numDays;
     }
 
+    private static final String FINDING = """
+            Published  : %s
+            Dependency : %s
+            CVE        : %s
+            CVSS Score : %s
+            Description: %s
+            
+            """;
+
     private static int checkCVE(final Project project, final Map<String, String> environment, final String[] args)
             throws DependencyResolutionFailed, InvalidCommandLine, IOException, ProjectHasVulnerabilities {
         final var cli = newCliParser(CliCheckCve::new).name("check-cve").parse(args);
@@ -53,10 +62,10 @@ public enum BobPlugin {;
                     found++;
                     for (final var cve : vuln.aliases()) {
                         if (sups.suppresses(cve, lib.repository)) continue;
-                        logger.accept(vuln.published() + "\t" + lib.repository + "\t" + cve + "\t" + toSeverity(vuln) + "\t" + vuln.summary());
+                        logger.accept(String.format(FINDING, vuln.published(), lib.repository, cve, toSeverity(vuln), vuln.summary()));
                     }
                     if (vuln.aliases().isEmpty()) {
-                        logger.accept(vuln.published() + "\t" + lib.repository + "\t" + "NO-CVE-LISTED" + "\t" + toSeverity(vuln) + "\t" + vuln.summary());
+                        logger.accept(String.format(FINDING, vuln.published(), lib.repository, "NO-CVE-LISTED", toSeverity(vuln), vuln.summary()));
                     }
                 }
             } catch (final Exception e) {
@@ -64,7 +73,10 @@ public enum BobPlugin {;
             }
         }
 
-        if (cli.failOnFind && found > 0) throw new ProjectHasVulnerabilities(found);
+        if (found > 0) {
+            if (cli.failOnFind) throw new ProjectHasVulnerabilities(found);
+            logger.accept("Found " + found + " total vulnerabilities in project dependencies");
+        }
         return 0;
     }
 
