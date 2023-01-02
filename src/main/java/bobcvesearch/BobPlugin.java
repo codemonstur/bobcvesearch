@@ -47,15 +47,19 @@ public enum BobPlugin {;
 
         int found = 0;
         for (final var lib : listProjectDependencies(project)) {
-            for (final var vuln : listVulnerabilities(lib)) {
-                found++;
-                for (final var cve : vuln.aliases()) {
-                    if (sups.suppresses(cve, lib.repository)) continue;
-                    logger.accept(vuln.published() + "\t" + lib.repository + "\t" + cve + "\t" + vuln.severity().score() + "\t" + vuln.summary());
+            try {
+                for (final var vuln : listVulnerabilities(lib)) {
+                    found++;
+                    for (final var cve : vuln.aliases()) {
+                        if (sups.suppresses(cve, lib.repository)) continue;
+                        logger.accept(vuln.published() + "\t" + lib.repository + "\t" + cve + "\t" + vuln.severity().score() + "\t" + vuln.summary());
+                    }
+                    if (vuln.aliases().isEmpty()) {
+                        logger.accept(vuln.published() + "\t" + lib.repository + "\t" + "NO-CVE-LISTED" + "\t" + vuln.severity().score() + "\t" + vuln.summary());
+                    }
                 }
-                if (vuln.aliases().isEmpty()) {
-                    logger.accept(vuln.published() + "\t" + lib.repository + "\t" + "NO-CVE-LISTED" + "\t" + vuln.severity().score() + "\t" + vuln.summary());
-                }
+            } catch (final Exception e) {
+                throw new IllegalArgumentException("Failed to list vulnerabilities for " + lib.repository, e);
             }
         }
 
