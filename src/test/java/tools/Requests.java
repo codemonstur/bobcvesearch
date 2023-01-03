@@ -9,6 +9,9 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
+import static bobcvesearch.BobPlugin.FINDING;
+import static bobthebuildtool.services.Log.logWarning;
+
 public class Requests {
 
     public static void main(final String... args) throws IOException {
@@ -18,6 +21,8 @@ public class Requests {
         Instant parse = Instant.parse("2022-12-12T15:30:33Z");
         LocalDateTime cet = LocalDateTime.ofInstant(parse, ZoneId.systemDefault());
         System.out.println(formatter.format(cet));
+
+        logWarning(FINDING + " ");
     }
 
 }

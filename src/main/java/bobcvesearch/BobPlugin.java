@@ -43,13 +43,12 @@ public enum BobPlugin {;
         public long numDays;
     }
 
-    private static final String FINDING = """
+    public static final String FINDING = """
             Published  : %s
             Dependency : %s
             CVE        : %s
             CVSS Score : %s
             Description: %s
-             
             """;
 
     private static int checkCVE(final Project project, final Map<String, String> environment, final String[] args)
@@ -66,10 +65,10 @@ public enum BobPlugin {;
                     found++;
                     for (final var cve : vuln.aliases()) {
                         if (sups.suppresses(cve, lib.repository)) continue;
-                        logger.accept(String.format(FINDING, vuln.published(), lib.repository, toCVE(cve), toCvssScore(vuln), vuln.summary()));
+                        logger.accept(String.format(FINDING, toHumanDate(vuln.published()), lib.repository, toCVE(cve), toCvssScore(vuln), vuln.summary()) + " ");
                     }
                     if (vuln.aliases().isEmpty()) {
-                        logger.accept(String.format(FINDING, vuln.published(), lib.repository, "NO-CVE-LISTED", toCvssScore(vuln), vuln.summary()));
+                        logger.accept(String.format(FINDING, toHumanDate(vuln.published()), lib.repository, "NO-CVE-LISTED", toCvssScore(vuln), vuln.summary()) + " ");
                     }
                 }
             } catch (final Exception e) {
