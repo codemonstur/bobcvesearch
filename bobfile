@@ -3,13 +3,13 @@ include https://raw.githubusercontent.com/codemonstur/bobfiles/master/foss-app-g
 
 packaging: bob-plugin
 enablePreview: false
-version: 10
+version: 11
 dependencies:
   - project: ../bobthebuildtool
     scope: provided
   - repository: com.github.codemonstur:httpclient:1.0.2
   - repository: org.jsoup:jsoup:1.15.3
-
+  - repository: us.springett:cvss-calculator:1.4.1
 
 test
     check-cve

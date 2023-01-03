@@ -2,7 +2,6 @@ package bobcvesearch;
 
 import bobcvesearch.db.OSVdev;
 import bobcvesearch.util.ProjectHasVulnerabilities;
-import bobcvesearch.util.Suppressions;
 import bobcvesearch.util.Suppressions.SuppressionsFile;
 import bobthebuildtool.pojos.buildfile.Project;
 import bobthebuildtool.pojos.error.DependencyResolutionFailed;
@@ -10,9 +9,14 @@ import bobthebuildtool.pojos.error.VersionTooOld;
 import bobthebuildtool.services.Log;
 import jcli.annotations.CliOption;
 import jcli.errors.InvalidCommandLine;
+import us.springett.cvss.Cvss;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -45,7 +49,7 @@ public enum BobPlugin {;
             CVE        : %s
             CVSS Score : %s
             Description: %s
-            
+             
             """;
 
     private static int checkCVE(final Project project, final Map<String, String> environment, final String[] args)
@@ -62,10 +66,10 @@ public enum BobPlugin {;
                     found++;
                     for (final var cve : vuln.aliases()) {
                         if (sups.suppresses(cve, lib.repository)) continue;
-                        logger.accept(String.format(FINDING, vuln.published(), lib.repository, cve, toSeverity(vuln), vuln.summary()));
+                        logger.accept(String.format(FINDING, vuln.published(), lib.repository, toCVE(cve), toCvssScore(vuln), vuln.summary()));
                     }
                     if (vuln.aliases().isEmpty()) {
-                        logger.accept(String.format(FINDING, vuln.published(), lib.repository, "NO-CVE-LISTED", toSeverity(vuln), vuln.summary()));
+                        logger.accept(String.format(FINDING, vuln.published(), lib.repository, "NO-CVE-LISTED", toCvssScore(vuln), vuln.summary()));
                     }
                 }
             } catch (final Exception e) {
@@ -80,8 +84,22 @@ public enum BobPlugin {;
         return 0;
     }
 
-    private static String toSeverity(final OSVdev.Vulnerability vuln) {
-        return isNullOrEmpty(vuln.severity()) ? "\t" : vuln.severity().get(0).score();
+    private static final DateTimeFormatter YYYY_MM_DD_HH_MM_SS = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static String toHumanDate(final String iso8601) {
+        final var instant = Instant.parse(iso8601);
+        final var datetime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+        return YYYY_MM_DD_HH_MM_SS.format(datetime);
+    }
+
+    private static String toCVE(final String cve) {
+        return cve + " (https://nvd.nist.gov/vuln/detail/" + cve + ")";
+    }
+
+    private static String toCvssScore(final OSVdev.Vulnerability vuln) {
+        if (isNullOrEmpty(vuln.severity())) return "NO SCORE GIVEN";
+        final var cvss = vuln.severity().get(0).score();
+        final var base = Cvss.fromVector(cvss).calculateScore().getBaseScore();
+        return cvss + " (" + base + ")";
     }
 
 }
