@@ -9,12 +9,11 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
+import static bobthebuildtool.services.Constants.HTTP_CLIENT;
+import static bobthebuildtool.services.Constants.JSON_PARSER;
 import static java.net.http.HttpResponse.BodyHandlers.ofString;
 
 public enum ExtendedHttpCaller {;
-
-    private static final HttpClient HTTP_CLIENT = HttpClient.newHttpClient();
-    private static final Gson GSON = new Gson();
 
     public static CustomHttpCallRequest newHttpCall() {
         return new CustomHttpCallRequest();
@@ -28,7 +27,7 @@ public enum ExtendedHttpCaller {;
             return body(HttpRequest.BodyPublishers.ofString(body));
         }
         public CustomHttpCallRequest bodyJson(final Object object) {
-            return body(HttpRequest.BodyPublishers.ofString(GSON.toJson(object)));
+            return body(HttpRequest.BodyPublishers.ofString(JSON_PARSER.toJson(object)));
         }
         @Override public CustomHttpCallResponse execute() throws IOException {
             return new CustomHttpCallResponse(send(ofString()));
@@ -39,7 +38,7 @@ public enum ExtendedHttpCaller {;
             super(response);
         }
         public <T> T fetchBodyInto(final Class<T> clazz) throws IOException {
-            return GSON.fromJson(fetchBodyAsString(), clazz);
+            return JSON_PARSER.fromJson(fetchBodyAsString(), clazz);
         }
     }
 }

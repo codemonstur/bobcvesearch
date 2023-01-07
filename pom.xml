@@ -43,5 +43,12 @@
             <version>1.4.1</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.kohsuke</groupId>
+            <artifactId>github-api</artifactId>
+            <version>1.313</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 </project>

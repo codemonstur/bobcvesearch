@@ -1,15 +1,16 @@
 include https://raw.githubusercontent.com/codemonstur/bobfiles/master/foss-app-github
-#plugin codemonstur/bobcvesearch:0.1.6
+plugin codemonstur/bobcvesearch:12
 
 packaging: bob-plugin
 enablePreview: false
-version: 12
+version: 13
 dependencies:
   - project: ../bobthebuildtool
     scope: provided
   - repository: com.github.codemonstur:httpclient:1.0.2
   - repository: org.jsoup:jsoup:1.15.3
   - repository: us.springett:cvss-calculator:1.4.1
+  - repository: org.kohsuke:github-api:1.313
 
 test
     check-cve
