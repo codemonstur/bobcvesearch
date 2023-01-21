@@ -7,7 +7,7 @@ version: 13
 dependencies:
   - project: ../bobthebuildtool
     scope: provided
-  - repository: com.github.codemonstur:httpclient:1.0.2
+  - repository: com.github.codemonstur:httpclient:1.0.3
   - repository: org.jsoup:jsoup:1.15.3
   - repository: us.springett:cvss-calculator:1.4.1
   - repository: org.kohsuke:github-api:1.313
