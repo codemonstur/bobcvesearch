@@ -3,42 +3,32 @@ package bobcvesearch.util;
 import com.google.gson.Gson;
 import httpclient.HttpCallRequest;
 import httpclient.HttpCallResponse;
+import httpclient.Serializers;
 
 import java.io.IOException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 import static bobthebuildtool.services.Constants.HTTP_CLIENT;
 import static bobthebuildtool.services.Constants.JSON_PARSER;
 import static java.net.http.HttpResponse.BodyHandlers.ofString;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public enum ExtendedHttpCaller {;
 
-    public static CustomHttpCallRequest newHttpCall() {
-        return new CustomHttpCallRequest();
+    public static HttpCallRequest newHttpCall() {
+        return new HttpCallRequest(HTTP_CLIENT, SERIALIZERS);
     }
 
-    public static class CustomHttpCallRequest extends HttpCallRequest<CustomHttpCallRequest> {
-        public CustomHttpCallRequest() {
-            super(HTTP_CLIENT);
-        }
-        public CustomHttpCallRequest body(final String body) {
-            return body(HttpRequest.BodyPublishers.ofString(body));
-        }
-        public CustomHttpCallRequest bodyJson(final Object object) {
-            return body(HttpRequest.BodyPublishers.ofString(JSON_PARSER.toJson(object)));
-        }
-        @Override public CustomHttpCallResponse execute() throws IOException {
-            return new CustomHttpCallResponse(send(ofString()));
-        }
-    }
-    public static class CustomHttpCallResponse extends HttpCallResponse<CustomHttpCallResponse> {
-        public CustomHttpCallResponse(final HttpResponse<String> response) {
-            super(response);
-        }
-        public <T> T fetchBodyInto(final Class<T> clazz) throws IOException {
-            return JSON_PARSER.fromJson(fetchBodyAsString(), clazz);
-        }
-    }
+    private static final Serializers SERIALIZERS = new Serializers.Builder()
+        .json(new Serializers.Serializer() {
+            public <U> U fromData(final byte[] data, final Class<U> clazz) {
+                return JSON_PARSER.fromJson(new String(data, UTF_8), clazz);
+            }
+        })
+        .build();
+
 }
