@@ -6,6 +6,7 @@ import fr.cryptohash.SHA256;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -66,7 +67,7 @@ public enum OSVdev {;
             .body(json)
             .execute()
             .verifyNotServerError().verifySuccess()
-            .fetchBodyAsString());
+            .fetchBodyAsString(UTF_8));
     }
 
     private static final Path CACHE_DIR = Paths.get(System.getProperty("user.home"), ".bob", "plugins", "bobcvesearch", "cache");
